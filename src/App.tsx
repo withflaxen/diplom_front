@@ -1,22 +1,32 @@
 import React from 'react';
+import {SignUpPage} from './pages/signup/page';
+import {createBrowserRouter, Route, Routes} from 'react-router-dom';
+import {ErrorPage} from './pages/error-page/page';
+import {LoginPage} from './pages/login/page';
+import {Main} from './pages/main/page';
 
+
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <App/>,
+        errorElement:<ErrorPage/>,
+    },
+    {
+        path: "/login",
+        element: <LoginPage/>,
+        errorElement:<ErrorPage/>,
+    },
+]);
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Routes>
+
+              <Route path="/" element={<SignUpPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/main" element={<Main />} />
+
+      </Routes>
   );
 }
 

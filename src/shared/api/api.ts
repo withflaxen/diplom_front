@@ -1,7 +1,6 @@
-import {createEffect} from 'effector';
 import axios from 'axios';
+import {AuthResponse} from './types';
 
-import {AuthResponse} from "../models/response/AuthResponse";
 
 export const API_URL = `http://localhost:5000/api`
 
@@ -34,46 +33,4 @@ $api.interceptors.response.use((config) => {
 
 export default $api;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-type MockArgs <T> = T & {
-    shouldThrow?: boolean
-};
-type Credentials = {
-    email: string;
-    password: string;
-};
-type HttpResponse = {
-    statusCode: number;
-}
-
-
-const createMockEffect = <Args extends {shouldThrow?: boolean},Response,Error> (res:Response,err:Error) =>
-    createEffect<Args ,Response & HttpResponse, Error & HttpResponse>((args)=>{
-    return new Promise( (resolve, reject) =>{
-        setTimeout(()=>{
-            if (args.shouldThrow){
-                reject({statusCode:500,...err})
-            }
-            if (!args.shouldThrow){
-                resolve({statusCode:200,...res})
-            }
-        },250);
-    })
-});
-
-
-export const fxSignUp = createMockEffect<MockArgs<Credentials>,{message:string},{errorText:string}>({message:'Goood'},{errorText:'Baad'});
-export const fxLogin = createMockEffect<MockArgs<Credentials>,{message:string},{errorText:string}>({message:'Goood'},{errorText:'Baad'});
 
