@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Email, LoginWrapper, Password, Username} from '../../shared/ui';
+import {Button, Email, Link, LoginWrapper, Password, Username} from '../../shared/ui';
 import {Center, Stack} from '@chakra-ui/react';
 import {BoxProps} from '@chakra-ui/layout/dist/box';
 import {useForm} from 'effector-forms';
@@ -23,6 +23,9 @@ export const SignUpPage = () => {
                     <Password field={password}/>
                     <Center>
                         <Button width="5rem" isDisabled={!eachValid} onClick={()=>submit()}>Sign up</Button>
+                    </Center>
+                    <Center>
+                        <Link to='/login'>Already have an account? Sign in!</Link>
                     </Center>
                 </Stack>
         </LoginWrapper>

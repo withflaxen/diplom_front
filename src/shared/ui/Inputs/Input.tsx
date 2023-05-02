@@ -16,7 +16,7 @@ export const Input:FC<BaseInputProps> = ({field,...props}) => {
             focusBorderColor={'white'}
             value={value}
             onChange={(e)=>onChange(e.target.value)}
-            autoComplete="new-password"
+            // autoComplete="new-password"
             {...props}/>
     );
 };

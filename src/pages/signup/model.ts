@@ -3,8 +3,10 @@ import {rules} from '../../shared/forms';
 import {createEffect, forward, sample} from 'effector';
 import {AuthService} from '../../shared/api/AuthService';
 
-export const fxSignUp = createEffect(({email,password}:{email: string, password: string,username:string})=>{
-    return AuthService.registration(email,password)
+export const fxSignUp = createEffect(async({email,password,username}:{email: string, password: string,username:string})=>{
+    const {data} = await AuthService.registration(email,password,username);
+    localStorage.setItem('token',data.accessToken);
+    return data
 })
 
 export const signUpForm = createForm({
