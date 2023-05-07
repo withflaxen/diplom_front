@@ -57,14 +57,19 @@ sample({
     target: fxLogin
 })
 
+forward({
+    from: logout,
+    to: fxLogout
+})
 
 sample({
     source:$navigate,
-    clock: logout,
+    clock: fxLogout.doneData,
     filter: (navigate): navigate is NavigateFunction => !!navigate,
-    fn:(navigate)=>({navigate,url:'/login'})  as {navigate:NavigateFunction,url:string},
-    target: [fxRedirectTo,fxLogout]
+    fn:(navigate)=>({navigate,url:'/'})  as {navigate:NavigateFunction,url:string},
+    target: fxRedirectTo
 });
+
 sample({
     source: $navigate,
     clock: fxLogin.doneData,
@@ -77,10 +82,6 @@ forward({
     to: $user
 });
 
-// forward({
-//     from: fxCheckAuth.failData,
-//     to: logout
-// })
 
 sample({
     clock:[fxCheckAuth.doneData,fxLogin.doneData],

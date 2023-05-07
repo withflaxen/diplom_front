@@ -1,13 +1,18 @@
 import {createForm} from 'effector-forms';
 import {rules} from '../../shared/forms';
-import {createEffect, forward, sample} from 'effector';
+import {createEffect, createEvent, forward, restore, sample} from 'effector';
 import {AuthService} from '../../shared/api/AuthService';
 
 export const fxSignUp = createEffect(async({email,password,username}:{email: string, password: string,username:string})=>{
     const {data} = await AuthService.registration(email,password,username);
-    localStorage.setItem('token',data.accessToken);
     return data
 })
+
+export const setSuccessMessage = createEvent<string>();
+export const $successMessage = restore(setSuccessMessage,'');
+
+export const setErrorMessage = createEvent<string>();
+export const $errorMessage = restore(setErrorMessage,'');
 
 export const signUpForm = createForm({
    fields:{
@@ -17,11 +22,11 @@ export const signUpForm = createForm({
        },
        password: {
            init: "",
-           rules:[rules.required()],
+           rules:[rules.required(),rules.maxLength(14),rules.minLength(4)],
        },
        username: {
            init: "",
-           rules:[rules.required()],
+           rules:[rules.required(),rules.maxLength(14),rules.minLength(4)],
        },
    }
 });
@@ -32,12 +37,18 @@ sample({
     filter: signUpForm.$eachValid,
     fn: ({email,password,username})=>({email,password,username}),
     target: fxSignUp
-})
+});
 forward({
     from: fxSignUp.doneData,
     to: signUpForm.resetValues
-})
-signUpForm.submit.watch(e=>console.log('submit'))
-signUpForm.$eachValid.watch(e=>console.log(e,'$eachValid'))
+});
 
-fxSignUp.doneData.watch(e=>console.log(e,'registration'))
+forward({
+    from: fxSignUp.doneData,
+    to: setSuccessMessage.prepend(_=> "Вы успешно зарегистрировались!")
+});
+
+// sample({
+//     clock: fxSignUp.failData,
+//     filter: (res) => res.
+// })
