@@ -11,7 +11,7 @@ import {API_URL} from '../../shared/api/api';
 export const loginGate = createGate<NavigateFunction>();
 
 const $navigate = createStore<NavigateFunction|null>(null);
-export const $user = createStore({} as IUser);
+export const $user = createStore<null | IUser>(null);
 const fxRedirectTo = createEffect<{navigate:NavigateFunction,url:string},void>(({navigate,url})=>{
     navigate(url,{ replace: true });
 })
@@ -91,7 +91,10 @@ sample({
     target: $user
 });
 
-fxLogin.failData.watch(e=>console.log('failed',e))
-
-fxLogin.doneData.watch(e=>console.log('fxLogin doneData',e))
-fxCheckAuth.doneData.watch(e=>console.log('fxCheckAuth doneData',e))
+sample({
+    clock: fxCheckAuth.failData,
+    //@ts-ignore
+    filter: ({response})=> response.status === 401,
+    target: logout
+})
+$user.reset(logout);

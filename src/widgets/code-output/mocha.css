@@ -1,0 +1,23 @@
+#mocha-stats {
+  position: unset;
+}
+
+#mocha-stats li,#mocha-stats em {
+  color: white;
+}
+
+#mocha .test a.replay {
+  display: none;
+}
+
+#mocha .test h2{
+  font-size: 1rem;
+}
+
+#mocha .test.pass::before {
+  font-size: 1.2rem;
+}
+
+#mocha .test.fail::before {
+  font-size: 1.2rem;
+}

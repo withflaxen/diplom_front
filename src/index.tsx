@@ -3,12 +3,10 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import {ChakraProvider} from '@chakra-ui/react';
-import {BrowserRouter, createBrowserRouter, RouterProvider} from 'react-router-dom';
+import {BrowserRouter} from 'react-router-dom';
 import './pages/model';
 import {theme} from './app/chakra';
-import {ErrorPage} from './pages/error-page/page';
 import {AuthProvider} from './pages/login/AuthProvider';
-import {LoginPage} from './pages/login/page';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
