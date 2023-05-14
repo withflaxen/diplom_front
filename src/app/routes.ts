@@ -27,12 +27,12 @@ export const routes = [
         isProtected: true,
     },
     {
-        path: '/task',
+        path: '/task/:id',
         Component: TaskPage,
         isProtected: true,
     },
     {
-        path: '/solutions',
+        path: '/solutions/:id',
         Component: SolutionsPage,
         isProtected: true,
     },

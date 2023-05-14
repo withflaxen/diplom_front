@@ -1,170 +1,137 @@
 import React, { useState } from "react";
 import {
     Box,
-    Button,
     Flex,
     Heading,
     Icon,
-    Image,
     Input,
-    Link,
-    Stack,
     Text,
 } from "@chakra-ui/react";
 import { FaThumbsUp } from "react-icons/fa";
+import {useGate, useStore} from 'effector-react';
+import {$solutions, addComment, clickDeleteComment, clickLikeBtn, SolutionPageGate} from './model';
+import {Header} from '../../widgets';
+import {$user} from '../login/model';
+import { Button } from "../../shared/ui";
+import {highlight, languages} from 'prismjs';
+import Editor from 'react-simple-code-editor';
+import './styles.css';
+import {useParams} from 'react-router-dom';
+import {ISolution} from '../../shared/api/types';
 
-// тип для описания данных решения
-type Solution = {
-    user: string;
-    language: string;
-    code: string;
-    votes: number;
-    comments: Comment[];
-};
-
-// тип для описания данных комментария
-type Comment = {
-    user: string;
-    text: string;
-};
 
 // компонент для отображения решения
-function SolutionCard({ solution }: { solution: Solution }) {
-    // состояние для отслеживания голосов за решение
-    const [votes, setVotes] = useState(solution.votes);
-    // состояние для отслеживания комментариев к решению
-    const [comments, setComments] = useState(solution.comments);
-    // состояние для отслеживания видимости формы для добавления комментария
-    const [showForm, setShowForm] = useState(false);
-    // состояние для отслеживания текста нового комментария
-    const [newComment, setNewComment] = useState("");
-    // функция для обработки клика по кнопке голосования
+function SolutionCard({ solution }: { solution: ISolution }) {
+    const user = useStore($user);
+    const [newComment, setNewComment] = useState('');
     const handleVoteClick = () => {
-        // увеличиваем количество голосов на один
-        setVotes((prev) => prev + 1);
-        // TODO: отправить запрос на сервер для обновления голосов
+        clickLikeBtn({ solutionID:solution.id, userID:user?.id!})
     };
-    // функция для обработки добавления комментария
-    const handleAddComment = (comment: Comment) => {
-        // добавляем новый комментарий к массиву комментариев
-        setComments((prev) => [...prev, comment]);
-        // TODO: отправить запрос на сервер для добавления комментария
-        // скрываем форму и очищаем текст нового комментария
-        setShowForm(false);
-        setNewComment("");
-    };
-    // функция для обработки клика по кнопке показать/скрыть форму
-    const handleShowFormClick = () => {
-        // переключаем видимость формы
-        setShowForm((prev) => !prev);
-        // очищаем текст нового комментария
-        setNewComment("");
-    };
-    // функция для обработки изменения текста нового комментария
+    const comments = solution.comments;
+
+    const [showMore,setShowMore] = useState(false);
     const handleNewCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // обновляем текст нового комментария
         setNewComment(e.target.value);
     };
     return (
         <Box bg="gray.800" p={4} borderRadius="md" mb={4}>
             <Flex direction="row" align="center" justify="space-between">
                 <Box>
-                    <Text color="white">{solution.user}</Text>
-                    <Text color="white">{solution.language}</Text>
+                    <Text color="white" fontSize='20px' fontStyle='italic'>{solution.username}</Text>
                 </Box>
                 <Button colorScheme="blue" onClick={handleVoteClick}>
-                    <Icon as={FaThumbsUp} mr={2} />
-                    {votes}
+                    <Icon as={FaThumbsUp} color={solution.isActive ? 'green' : 'white'} mr={2} />
+                    {solution.likes}
                 </Button>
             </Flex>
-            <Box bg="black" p={4} mt={4}>
-                <Text color="white">{solution.code}</Text>
+            <Box bg="black" p={4} mt={4} borderRadius='1rem'>
+                <Editor
+                    className='solution'
+                    value={solution.solution}
+                    onValueChange={()=>{}}
+                    disabled
+                    // @ts-ignore
+                    highlight={code => highlight(code, languages.js)}
+                    padding={10}
+                    style={{
+                        fontFamily: '"Fira code", "Fira Mono", monospace',
+                        fontSize: 20,
+                    }}
+                />
             </Box>
             <Box mt={4}>
-                <Heading as="h3" color="white" mb={2}>
-                    Comments ({comments.length})
+                <Heading as="h6" fontSize='20px' color="white" mb={2}>
+                    Comments ({comments?.length??0})
                 </Heading>
-                {comments.map((comment) => (
-                    <Box key={comment.user} bg="gray.700" p={2} borderRadius="md" mb={2}>
-                        <Text color="white">{comment.user}</Text>
-                        <Text color="white">{comment.text}</Text>
-                    </Box>
-                ))}
-                {/* добавляем кнопку для показа/скрытия формы */}
-                <Button colorScheme="blue" onClick={handleShowFormClick}>
-                    {showForm ? "Hide form" : "Show form"}
-                </Button>
-                {/* добавляем условный рендеринг формы в зависимости от состояния showForm */}
-                {showForm && (
-                    <Flex direction="row" align="center" mt={2}>
-                        {/* добавляем инпут для ввода нового комментария */}
+                {
+                    !!comments && (
+                        <>
+                            {comments.slice(showMore?0:comments.length-1).map((comment) => (
+                                <>
+                                    <Box display='flex' justifyContent='space-between' key={comment.username} bg="gray.700" p={2} borderRadius="md" mb={2}>
+                                        <Box>
+                                            <Text color="white" fontSize='20px' fontStyle='italic'>{comment.username}</Text>
+                                            <Text color="white">{comment.comment}</Text>
+                                        </Box>
+                                        <Button alignSelf='flex-end' onClick={()=>clickDeleteComment({solutionID:solution.id,id:comment.id!})}>
+                                            Delete
+                                        </Button>
+                                    </Box>
+                                </>
+                            ))}
+                        </>
+                    )
+                }
+                {
+                    comments.length > 1 && (
+                        <Button onClick={()=>setShowMore(p=>!p)}>
+                            {showMore ? 'Hide' : 'Show More'}
+                        </Button>
+                    )
+                }
+
+                <Flex direction="row" align="center" mt={2}>
                         <Input
                             value={newComment}
                             onChange={handleNewCommentChange}
                             placeholder="Type your comment"
                             mr={2}
                         />
-                        {/* добавляем кнопку для отправки нового комментария */}
                         <Button
-                            colorScheme="green"
-                            onClick={() =>
-                                handleAddComment({
-                                    user: "Current User", // TODO: заменить на имя текущего пользователя
-                                    text: newComment,
-                                })
-                            }
+                            onClick={() =>{
+                                addComment({
+                                    solutionID: solution.id,
+                                    username: user?.username!,
+                                    comment: newComment,
+                                });
+                                setNewComment('');
+                            }}
                         >
                             Add comment
                         </Button>
                     </Flex>
-                )}
+
             </Box>
         </Box>
     );
 }
 
 // пример данных решений
-const solutions: Solution[] = [
-    {
-        user: "User1",
-        language: "JavaScript",
-        code: `function sum(a, b) {
-      return a + b;
-    }`,
-        votes: 10,
-        comments: [
-            {
-                user: "User2",
-                text: "Nice and simple solution!",
-            },
-            {
-                user: "User3",
-                text: "I like how you used arrow functions.",
-            },
-        ],
-    },
-    {
-        user: "User4",
-        language: "Python",
-        code: `def sum(a, b):
-      return a + b`,
-        votes: 5,
-        comments: [
-            {
-                user: "User5",
-                text: "This is the same as my solution.",
-            },
-            {
-                user: "User6",
-                text: "You could use lambda for a shorter solution.",
-            },
-        ],
-    },
-];
+
 
 export const SolutionsPage = () => {
+    const {id} = useParams();
+    useGate(SolutionPageGate,id);
+    const solutions = useStore($solutions);
     return (
         // рендерим компонент решения с данными решения
-        <SolutionCard solution={solutions[0]} />
+        <>
+            <Header/>
+            <Box padding='6rem'>
+                {
+                    solutions.map((e:ISolution,i:number)=><SolutionCard key={i} solution={e}/>)
+                }
+            </Box>
+        </>
     );
 };

@@ -5,20 +5,26 @@ import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism.css';
-import {parseFunction} from '../../shared/utils';
 import './styles.css';
-const functionName = 'addNumber';
-const argumentsList = ['a','b'];
+import {useStore} from 'effector-react';
+import {$task} from '../../entities/task/model';
+import {ITask} from '../../shared/api/types';
+import {setSolution} from './model';
+
 
 export const CodeInputField = () => {
+    const task = useStore($task) || {} as ITask;
+
     const [code, setCode] = useState(
-        `function ${functionName}(${argumentsList.join(",")}) {  return a + b;}`
+        `function ${task.name}(${task.args?.join(",")}) {  }`
     );
-    console.log(parseFunction(code)?.args,parseFunction(code)?.body)
     return (
         <Editor
             value={code}
-            onValueChange={code => setCode(code)}
+            onValueChange={code => {
+                setCode(code);
+                setSolution(code);
+            }}
             // @ts-ignore
             highlight={code => highlight(code, languages.js)}
             padding={10}

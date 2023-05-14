@@ -3,8 +3,9 @@ import {Button as ChakraButton} from '@chakra-ui/react';
 import {ButtonProps} from '@chakra-ui/button/dist/button';
 
 export const Button:FC<ButtonProps&{to?:string}> = (props) => {
+    const color = props.disabled? 'gray' :"#BB432C";
     return (
-        <ChakraButton _hover={{backgroundColor:"#CF4B32"}} backgroundColor="#BB432C" textColor="#FFF" size="md" {...props}/>
+        <ChakraButton _hover={{backgroundColor:`${color}`}} backgroundColor={color} textColor="#FFF" size="md" {...props}/>
     );
 };
 

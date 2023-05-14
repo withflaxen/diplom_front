@@ -5,6 +5,7 @@ import App from './App';
 import {ChakraProvider} from '@chakra-ui/react';
 import {BrowserRouter} from 'react-router-dom';
 import './pages/model';
+import './entities/model';
 import {theme} from './app/chakra';
 import {AuthProvider} from './pages/login/AuthProvider';
 

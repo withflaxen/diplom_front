@@ -1,5 +1,5 @@
 import React, {FC, useEffect} from 'react';
-import { Box, Heading, Flex } from "@chakra-ui/react";
+import { Box, Heading, Flex,Text } from "@chakra-ui/react";
 import {Button} from '../../shared/ui';
 import {NavLink} from 'react-router-dom';
 import {useAuth} from '../../pages/login/AuthProvider';
@@ -28,10 +28,13 @@ export const Header:FC = (props) => {
             </Flex>
             <Box display="flex" gap="6rem" mr="10%">
             {
-        user ? (
-                <Button onClick={logout}>
-                    Logout
-                </Button>
+        user ? (<>
+                    <Text>{user.username}</Text>
+                    <Button onClick={logout}>
+                        Logout
+                    </Button>
+            </>
+
             ) :
             <>
                 <Button as={NavLink} to={'/login'}>
