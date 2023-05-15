@@ -9,10 +9,10 @@ const BoxStyles:BoxProps = {
     padding:"2rem",
 }
 
-export const LoginWrapper:FC<any> = ({children}) => {
+export const LoginWrapper:FC<any> = ({children,width="40%"}) => {
     return (
         <Center>
-            <Box {...BoxStyles}>
+            <Box {...BoxStyles} width={width}>
                 {children}
             </Box>
         </Center>

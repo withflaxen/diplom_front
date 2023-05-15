@@ -17,5 +17,7 @@ export class TaskService {
     static async getSolutionsByTaskId(id:string): Promise<AxiosResponse<ISolution[]>> {
         return $api.post<any>('/taskSolutions' ,{id})
     }
+    static async saveTask(payload:any): Promise<AxiosResponse<any>> {
+        return $api.post<any>('/createTask' ,payload)
+    }
 }
-

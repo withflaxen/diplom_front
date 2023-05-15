@@ -1,13 +1,14 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC} from 'react';
 import { Box, Heading, Flex,Text } from "@chakra-ui/react";
 import {Button} from '../../shared/ui';
 import {NavLink} from 'react-router-dom';
 import {useAuth} from '../../pages/login/AuthProvider';
+import {IUser} from '../../shared/api/types';
 
 
 export const Header:FC = (props) => {
-    const {logout,user} = useAuth();
-
+    const {logout,user}:{user:IUser|null,logout:any} = useAuth();
+    console.log(user)
     return (
         <Flex
             as="nav"
@@ -29,6 +30,12 @@ export const Header:FC = (props) => {
             <Box display="flex" gap="6rem" mr="10%">
             {
         user ? (<>
+                    { user.role === 'admin' && (
+                            <>
+                                <Text as={NavLink} to='/createUser'>Create user</Text>
+                                <Text as={NavLink} to='/createTask'>Create task</Text>
+                            </>
+                    )}
                     <Text>{user.username}</Text>
                     <Button onClick={logout}>
                         Logout

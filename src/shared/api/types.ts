@@ -3,6 +3,9 @@ export interface IUser {
     username: string;
     isActivated: boolean;
     id: string;
+    role: "admin" | "user"
+    _id: string
+    password?:string
 }
 
 export interface AuthResponse {

@@ -4,6 +4,8 @@ import {LoginPage} from '../pages/login/page';
 import {SignUpPage} from '../pages/signup/page';
 import {TaskPage} from '../pages/task-page/page';
 import {SolutionsPage} from '../pages/solutions/page';
+import {CreateUserPage} from '../pages/create-user/page';
+import {CreateTaskPage} from '../pages/create-task/page';
 
 export const routes = [
     {
@@ -34,6 +36,16 @@ export const routes = [
     {
         path: '/solutions/:id',
         Component: SolutionsPage,
+        isProtected: true,
+    },
+    {
+        path: '/createUser',
+        Component: CreateUserPage,
+        isProtected: true,
+    },
+    {
+        path: '/createTask',
+        Component: CreateTaskPage,
         isProtected: true,
     },
 ];

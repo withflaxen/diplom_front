@@ -14,7 +14,7 @@ import {$user} from '../login/model';
 const difficultyToColor = {
     "easy":"green",
     "medium":"yellow",
-    "hard":"green"
+    "hard":"red"
 }
 
 const TaskCard:FC<ITask & {user:IUser}> = (props) => {
